@@ -7,6 +7,25 @@
 
     <div class="py-12 bg-gray-50 min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
+
+            {{-- Alert Messages --}}
+            @if(session('success'))
+                <div class="bg-emerald-50 text-emerald-600 p-5 rounded-2xl border border-emerald-100 flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span class="font-bold">{{ session('success') }}</span>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="bg-red-50 text-red-600 p-5 rounded-2xl border border-red-100 flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    <span class="font-bold">{{ session('error') }}</span>
+                </div>
+            @endif
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex items-center justify-between">
@@ -42,8 +61,83 @@
             </div>
 
             <div class="bg-white overflow-hidden shadow-sm rounded-3xl border border-gray-100 p-8">
-                <h3 class="font-black text-gray-800 mb-6 uppercase text-sm tracking-widest border-b pb-4">Riwayat Terakhir</h3>
+                <div class="flex justify-between items-center mb-6 border-b pb-4">
+                    <h3 class="font-black text-gray-800 uppercase text-sm tracking-widest">Riwayat Terakhir</h3>
+                    <a href="{{ route('siswa.riwayat') }}" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 uppercase tracking-widest transition-colors">Lihat Semua &rarr;</a>
                 </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50/50">
+                                <th class="px-8 py-4 text-xs font-black text-gray-400 uppercase tracking-widest border-b border-gray-100">Buku</th>
+                                <th class="px-8 py-4 text-xs font-black text-gray-400 uppercase tracking-widest border-b border-gray-100">Tgl Pinjam</th>
+                                <th class="px-8 py-4 text-xs font-black text-gray-400 uppercase tracking-widest border-b border-gray-100">Status</th>
+                                <th class="px-8 py-4 text-xs font-black text-gray-400 uppercase tracking-widest border-b border-gray-100 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-50">
+                            @forelse($pinjamanSaya->take(5) as $item)
+                            <tr class="hover:bg-slate-50/50 transition-colors group">
+                                <td class="px-8 py-6">
+                                    <div class="flex items-center gap-4 min-w-[200px]">
+                                        <div class="w-12 h-12 shrink-0 bg-indigo-50 rounded-xl flex flex-col items-center justify-center text-indigo-600 shadow-sm border border-indigo-100">
+                                            <span class="text-[9px] font-black leading-none uppercase">Code</span>
+                                            <span class="text-[11px] font-bold">{{ $item->buku->kode_buku ?? '-' }}</span>
+                                        </div>
+                                        <div class="truncate">
+                                            <p class="text-sm font-bold text-gray-800 leading-tight truncate">{{ $item->buku->judul ?? 'Buku Dihapus' }}</p>
+                                            <p class="text-[10px] text-gray-400 font-medium mt-1 uppercase tracking-widest truncate">
+                                                {{ $item->buku->kategori ?? '-' }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-6 text-sm text-gray-600 font-medium whitespace-nowrap">
+                                    {{ \Carbon\Carbon::parse($item->tanggal_pinjam)->format('d M Y') }}
+                                </td>
+                                <td class="px-8 py-6 whitespace-nowrap">
+                                    @if($item->status === 'menunggu')
+                                        <span class="px-4 py-2 bg-yellow-50 text-yellow-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-yellow-100">Menunggu</span>
+                                    @elseif($item->status === 'pinjam')
+                                        <span class="px-4 py-2 bg-orange-50 text-orange-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-orange-100">Dipinjam</span>
+                                    @elseif($item->status === 'ditolak')
+                                        <span class="px-4 py-2 bg-red-50 text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-red-100">Ditolak</span>
+                                    @else
+                                        <span class="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-emerald-100">Dikembalikan</span>
+                                    @endif
+                                </td>
+                                <td class="px-8 py-6 text-center whitespace-nowrap">
+                                    @if($item->status === 'pinjam')
+                                        <form action="{{ route('siswa.kembali', $item->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin mengembalikan buku ini sekarang?');">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-black px-4 py-2 rounded-xl shadow-sm transition-all uppercase tracking-widest">
+                                                Kembalikan
+                                            </button>
+                                        </form>
+                                    @else
+                                        <span class="text-gray-300 text-xs font-medium">-</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="4" class="px-8 py-12 text-center">
+                                    <div class="flex flex-col items-center justify-center text-gray-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <p class="text-sm font-bold uppercase tracking-widest">Belum Ada Riwayat</p>
+                                        <p class="text-xs mt-1">Pinjam buku pertamamu sekarang!</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </x-app-layout>

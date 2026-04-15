@@ -20,6 +20,11 @@ class Transaksi extends Model
         'denda'
     ];
 
-    public function user() { return $this->belongsTo(User::class); }
-    public function buku() { return $this->belongsTo(Buku::class); }
+    public function user() { 
+        return $this->belongsTo(User::class); 
+    }
+
+    public function buku() { 
+        return $this->belongsTo(Buku::class); 
+    }
 }

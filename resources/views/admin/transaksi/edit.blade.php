@@ -37,8 +37,10 @@
                     <div class="mb-4">
                         <x-input-label for="status" :value="__('Status Transaksi')" />
                         <select name="status" id="status" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                            <option value="menunggu" {{ $transaksi->status == 'menunggu' ? 'selected' : '' }}>Menunggu Persetujuan</option>
                             <option value="pinjam" {{ $transaksi->status == 'pinjam' ? 'selected' : '' }}>Masih Dipinjam</option>
                             <option value="kembali" {{ $transaksi->status == 'kembali' ? 'selected' : '' }}>Sudah Dikembalikan</option>
+                            <option value="ditolak" {{ $transaksi->status == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                         </select>
                     </div>
 

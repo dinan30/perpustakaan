@@ -15,13 +15,13 @@
         </div>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12 bg-gray-50 min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg overflow-x-auto">
+            <div class="bg-white p-6 shadow-sm sm:rounded-lg overflow-x-auto border border-gray-100">
                 
                 {{-- Alert Pesan Sukses --}}
                 @if(session('success'))
-                    <div class="mb-4 p-4 bg-green-100 text-green-700 rounded border-l-4 border-green-500 font-medium">
+                    <div class="mb-4 p-4 bg-green-100 text-green-700 rounded border-l-4 border-green-500 font-medium animate-pulse">
                         {{ session('success') }}
                     </div>
                 @endif
@@ -48,12 +48,12 @@
                     <tbody class="divide-y divide-gray-200 bg-white">
                         @forelse($transaksi as $item)
                         <tr class="hover:bg-gray-50 transition">
-                            {{-- Nama Peminjam dengan proteksi jika user null --}}
+                            {{-- Nama Peminjam --}}
                             <td class="px-4 py-4 text-sm font-medium text-gray-900">
                                 {{ $item->user->name ?? 'User Terhapus' }}
                             </td>
 
-                            {{-- Info Buku dengan proteksi jika buku null --}}
+                            {{-- Info Buku --}}
                             <td class="px-4 py-4 text-sm text-gray-600">
                                 <span class="block font-bold text-indigo-600 text-[10px] uppercase">
                                     {{ $item->buku->kode_buku ?? 'KODE-??' }}
@@ -69,24 +69,66 @@
                                 {{ \Carbon\Carbon::parse($item->tanggal_kembali)->format('d M Y') }}
                             </td>
 
+                            {{-- Status Badge --}}
                             <td class="px-4 py-4 text-center">
-                                <span class="px-2 py-1 rounded-full text-[10px] font-bold {{ $item->status == 'pinjam' ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700' }}">
-                                    {{ strtoupper($item->status) }}
-                                </span>
+                                @if($item->status == 'menunggu')
+                                    <span class="px-2 py-1 rounded-full text-[10px] font-bold bg-yellow-100 text-yellow-700">MENUNGGU</span>
+                                @elseif($item->status == 'pinjam')
+                                    <span class="px-2 py-1 rounded-full text-[10px] font-bold bg-orange-100 text-orange-700">PINJAM</span>
+                                @elseif($item->status == 'ditolak')
+                                    <span class="px-2 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700">DITOLAK</span>
+                                @else
+                                    <span class="px-2 py-1 rounded-full text-[10px] font-bold bg-green-100 text-green-700">KEMBALI</span>
+                                @endif
                             </td>
 
+                            {{-- Denda --}}
                             <td class="px-4 py-4 text-sm font-bold {{ $item->denda > 0 ? 'text-red-600' : 'text-gray-500' }}">
                                 Rp {{ number_format($item->denda, 0, ',', '.') }}
                             </td>
 
+                            {{-- Grup Tombol Aksi --}}
                             <td class="px-4 py-4 text-center text-sm font-medium">
-                                <div class="flex justify-center gap-3">
-                                    <a href="{{ route('transaksi.edit', $item->id) }}" class="text-indigo-600 hover:text-indigo-900 font-bold">Edit</a>
+                                <div class="flex justify-center items-center gap-2">
+                                    
+                                    {{-- TOMBOL PERSETUJUAN (Hanya muncul jika status 'menunggu') --}}
+                                    @if($item->status == 'menunggu')
+                                        <form action="{{ route('transaksi.setujui', $item->id) }}" method="POST" onsubmit="return confirm('Setujui peminjaman ini?')">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white text-[11px] px-3 py-1 rounded shadow-sm transition">
+                                                Setujui
+                                            </button>
+                                        </form>
+                                        <form action="{{ route('transaksi.tolak', $item->id) }}" method="POST" onsubmit="return confirm('Tolak peminjaman ini?')">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white text-[11px] px-3 py-1 rounded shadow-sm transition">
+                                                Tolak
+                                            </button>
+                                        </form>
+                                    @endif
+
+                                    {{-- TOMBOL PENGEMBALIAN (Hanya muncul jika status 'pinjam') --}}
+                                    @if($item->status == 'pinjam')
+                                        <form action="{{ route('transaksi.kembali', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin mengembalikan buku ini?')">
+                                            @csrf
+                                            <button type="submit" class="bg-green-500 hover:bg-green-600 text-white text-[11px] px-3 py-1 rounded shadow-sm transition">
+                                                Kembalikan
+                                            </button>
+                                        </form>
+                                    @endif
+
+                                    <a href="{{ route('transaksi.edit', $item->id) }}" class="text-indigo-600 hover:text-indigo-900 font-bold">
+                                        Edit
+                                    </a>
 
                                     <form action="{{ route('transaksi.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Hapus data ini? Stok akan dikembalikan jika status masih PINJAM.')">
                                         @csrf 
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900 font-bold">Hapus</button>
+                                        <button type="submit" class="text-red-600 hover:text-red-900 font-bold">
+                                            Hapus
+                                        </button>
                                     </form>
                                 </div>
                             </td>

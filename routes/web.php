@@ -38,6 +38,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('buku', BukuController::class);
         Route::resource('transaksi', TransaksiController::class);
+        Route::post('/transaksi/{id}/kembali', [TransaksiController::class, 'kembali'])->name('transaksi.kembali');
+        Route::put('/transaksi/{id}/setujui', [TransaksiController::class, 'setujui'])->name('transaksi.setujui');
+        Route::put('/transaksi/{id}/tolak', [TransaksiController::class, 'tolak'])->name('transaksi.tolak');
     });
 
     /**
@@ -65,5 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
 
 require __DIR__ . '/auth.php';

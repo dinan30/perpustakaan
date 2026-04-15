@@ -59,15 +59,15 @@ class PerpustakaanController extends Controller
         Transaksi::create([
             'user_id' => Auth::id(),
             'buku_id' => $request->buku_id,
-            'tgl_pinjam' => now()->toDateString(),
-            'tgl_kembali' => now()->addDays(7)->toDateString(),
-            'status' => 'pinjam',
+            'tanggal_pinjam' => now()->toDateString(),
+            'tanggal_kembali' => now()->addDays(7)->toDateString(),
+            'status' => 'menunggu',
             'denda' => 0
         ]);
 
         $buku->decrement('stok');
 
-        return redirect()->route('siswa.riwayat')->with('success', 'Buku ' . $buku->judul . ' berhasil dipinjam!');
+        return redirect()->route('siswa.riwayat')->with('success', 'Peminjaman buku ' . $buku->judul . ' sedang menunggu persetujuan admin!');
     }
 
     // Riwayat Peminjaman Siswa

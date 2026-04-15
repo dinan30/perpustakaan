@@ -9,30 +9,19 @@ use Illuminate\Http\Request;
 
 class TransaksiController extends Controller
 {
-    /**
-     * Menampilkan daftar transaksi (Penyebab error Method index does not exist)
-     */
     public function index()
     {
-        // Mengambil data transaksi dengan relasi user dan buku
         $transaksi = Transaksi::with(['user', 'buku'])->latest()->get();
         return view('admin.transaksi.index', compact('transaksi'));
     }
 
-    /**
-     * Form Tambah Transaksi
-     */
     public function create()
     {
         $users = User::all(); 
         $buku = Buku::where('stok', '>', 0)->get();
-
         return view('admin.transaksi.create', compact('users', 'buku'));
     }
 
-    /**
-     * Simpan Transaksi Baru
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -48,7 +37,6 @@ class TransaksiController extends Controller
             return back()->with('error', 'Stok buku habis!');
         }
 
-        // Simpan ke database sesuai kolom di migration lo
         Transaksi::create([
             'user_id' => $request->user_id,
             'buku_id' => $request->buku_id,
@@ -58,9 +46,74 @@ class TransaksiController extends Controller
             'denda' => 0,
         ]);
 
-        // Kurangi stok
         $dataBuku->decrement('stok');
 
-        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil ditambahkan!');
+        return redirect()->route('transaksi.index')->with('success', 'Peminjaman berhasil dicatat!');
+    }
+
+    public function kembali($id)
+    {
+        $transaksi = Transaksi::findOrFail($id);
+
+        if ($transaksi->status === 'pinjam') {
+            $transaksi->update(['status' => 'kembali']);
+
+            $buku = Buku::find($transaksi->buku_id);
+            if ($buku) {
+                $buku->increment('stok');
+            }
+
+            return redirect()->route('transaksi.index')->with('success', 'Buku berhasil dikembalikan.');
+        }
+
+        return redirect()->route('transaksi.index')->with('error', 'Buku sudah dikembalikan.');
+    }
+
+    public function setujui($id)
+    {
+        $transaksi = Transaksi::findOrFail($id);
+
+        if ($transaksi->status === 'menunggu') {
+            $transaksi->update(['status' => 'pinjam']);
+            return redirect()->route('transaksi.index')->with('success', 'Peminjaman disetujui.');
+        }
+
+        return redirect()->route('transaksi.index')->with('error', 'Transaksi tidak dapat disetujui.');
+    }
+
+    public function tolak($id)
+    {
+        $transaksi = Transaksi::findOrFail($id);
+
+        if ($transaksi->status === 'menunggu') {
+            $transaksi->update(['status' => 'ditolak']);
+
+            // Kembalikan stok buku
+            $buku = Buku::find($transaksi->buku_id);
+            if ($buku) {
+                $buku->increment('stok');
+            }
+
+            return redirect()->route('transaksi.index')->with('success', 'Peminjaman ditolak.');
+        }
+
+        return redirect()->route('transaksi.index')->with('error', 'Transaksi tidak dapat ditolak.');
+    }
+
+    public function destroy($id)
+    {
+        $transaksi = Transaksi::findOrFail($id);
+
+        // Jika transaksi masih berstatus "pinjam" atau "menunggu", kita harus mengembalikan stok bukunya terlebih dahulu
+        if (in_array($transaksi->status, ['pinjam', 'menunggu'])) {
+            $buku = Buku::find($transaksi->buku_id);
+            if ($buku) {
+                $buku->increment('stok');
+            }
+        }
+
+        $transaksi->delete();
+
+        return redirect()->route('transaksi.index')->with('success', 'Data transaksi berhasil dihapus.');
     }
 }
