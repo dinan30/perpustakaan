@@ -15,7 +15,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 
                 @if(session('success'))
-                    <div class="mb-4 p-4 bg-green-100 border-l-4 border-green-500 text-green-700">
+                    <div class="mb-4 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 font-bold rounded">
                         {{ session('success') }}
                     </div>
                 @endif
@@ -24,32 +24,29 @@
                     <table class="min-w-full divide-y divide-gray-200 border">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Judul</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Penulis</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Penerbit</th>
-                                
-                                {{-- 1. Tambahkan Header Kategori di sini --}}
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kategori</th>
-                                
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stok</th>
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                                <th class="px-6 py-3 text-left text-xs font-black text-gray-500 uppercase tracking-widest">Kode</th>
+                                <th class="px-6 py-3 text-left text-xs font-black text-gray-500 uppercase tracking-widest">Judul</th>
+                                <th class="px-6 py-3 text-left text-xs font-black text-gray-500 uppercase tracking-widest">Penulis</th>
+                                <th class="px-6 py-3 text-left text-xs font-black text-gray-500 uppercase tracking-widest">Kategori</th>
+                                <th class="px-6 py-3 text-left text-xs font-black text-gray-500 uppercase tracking-widest">Stok</th>
+                                <th class="px-6 py-3 text-center text-xs font-black text-gray-500 uppercase tracking-widest">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse($buku as $item)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $item->judul }}</td>
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-indigo-600">{{ $item->kode_buku }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">{{ $item->judul }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->penulis }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->penerbit }}</td>
-                                    
-                                    {{-- 2. Tambahkan Data Kategori di sini --}}
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->kategori }}</td>
-                                    
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->stok }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 italic">{{ $item->kategori }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <span class="px-2 py-1 {{ $item->stok > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} rounded-lg text-xs font-bold">
+                                            {{ $item->stok }}
+                                        </span>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                                         <div class="flex justify-center gap-3">
                                             <a href="{{ route('buku.edit', $item->id) }}" class="text-indigo-600 hover:text-indigo-900 font-bold">Edit</a>
-
                                             <form action="{{ route('buku.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Hapus buku ini?')">
                                                 @csrf
                                                 @method('DELETE')
@@ -60,8 +57,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    {{-- 3. Ubah colspan menjadi 6 karena sekarang ada 6 kolom --}}
-                                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">Belum ada koleksi buku.</td>
+                                    <td colspan="6" class="px-6 py-10 text-center text-gray-500 font-medium italic">Belum ada koleksi buku.</td>
                                 </tr>
                             @endforelse
                         </tbody>

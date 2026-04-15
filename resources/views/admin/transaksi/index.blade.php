@@ -4,6 +4,14 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Riwayat Transaksi Perpustakaan') }}
             </h2>
+            
+            {{-- TOMBOL TAMBAH TRANSAKSI --}}
+            <a href="{{ route('transaksi.create') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 transition ease-in-out duration-150 shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                {{ __('Tambah Transaksi') }}
+            </a>
         </div>
     </x-slot>
 
@@ -18,63 +26,80 @@
                     </div>
                 @endif
 
+                {{-- Alert Pesan Error --}}
+                @if(session('error'))
+                    <div class="mb-4 p-4 bg-red-100 text-red-700 rounded border-l-4 border-red-500 font-medium">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
                 <table class="min-w-full border divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Peminjam</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Buku</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tgl Pinjam</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Batas Kembali</th>
-                            <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            
-                            {{-- KOLOM DENDA DITAMBAHKAN --}}
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Denda</th>
-                            
-                            <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Peminjam</th>
+                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Buku</th>
+                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Tgl Pinjam</th>
+                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Batas Kembali</th>
+                            <th class="px-4 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Denda</th>
+                            <th class="px-4 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 bg-white">
-                        @foreach($transaksi as $item)
+                        @forelse($transaksi as $item)
                         <tr class="hover:bg-gray-50 transition">
-                            <td class="px-4 py-4 text-sm font-medium text-gray-900">{{ $item->user->name }}</td>
-                            <td class="px-4 py-4 text-sm text-gray-600">{{ $item->buku->judul }}</td>
-                            <td class="px-4 py-4 text-sm text-gray-600">{{ $item->tanggal_pinjam }}</td>
-                            <td class="px-4 py-4 text-sm text-gray-600">{{ $item->tanggal_kembali }}</td>
+                            {{-- Nama Peminjam dengan proteksi jika user null --}}
+                            <td class="px-4 py-4 text-sm font-medium text-gray-900">
+                                {{ $item->user->name ?? 'User Terhapus' }}
+                            </td>
+
+                            {{-- Info Buku dengan proteksi jika buku null --}}
+                            <td class="px-4 py-4 text-sm text-gray-600">
+                                <span class="block font-bold text-indigo-600 text-[10px] uppercase">
+                                    {{ $item->buku->kode_buku ?? 'KODE-??' }}
+                                </span>
+                                {{ $item->buku->judul ?? 'Buku tidak ditemukan' }}
+                            </td>
+
+                            <td class="px-4 py-4 text-sm text-gray-600">
+                                {{ \Carbon\Carbon::parse($item->tanggal_pinjam)->format('d M Y') }}
+                            </td>
+                            
+                            <td class="px-4 py-4 text-sm text-gray-600">
+                                {{ \Carbon\Carbon::parse($item->tanggal_kembali)->format('d M Y') }}
+                            </td>
+
                             <td class="px-4 py-4 text-center">
                                 <span class="px-2 py-1 rounded-full text-[10px] font-bold {{ $item->status == 'pinjam' ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700' }}">
                                     {{ strtoupper($item->status) }}
                                 </span>
                             </td>
 
-                            {{-- MENAMPILKAN DENDA DENGAN FORMAT RUPIAH --}}
                             <td class="px-4 py-4 text-sm font-bold {{ $item->denda > 0 ? 'text-red-600' : 'text-gray-500' }}">
                                 Rp {{ number_format($item->denda, 0, ',', '.') }}
                             </td>
 
                             <td class="px-4 py-4 text-center text-sm font-medium">
                                 <div class="flex justify-center gap-3">
-                            
-
-                                    <a href="{{ route('transaksi.edit', $item->id) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                                    <a href="{{ route('transaksi.edit', $item->id) }}" class="text-indigo-600 hover:text-indigo-900 font-bold">Edit</a>
 
                                     <form action="{{ route('transaksi.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Hapus data ini? Stok akan dikembalikan jika status masih PINJAM.')">
                                         @csrf 
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
+                                        <button type="submit" class="text-red-600 hover:text-red-900 font-bold">Hapus</button>
                                     </form>
                                 </div>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="7" class="text-center py-12 text-gray-500 italic">
+                                Belum ada riwayat transaksi.
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
-
-                @if($transaksi->isEmpty())
-                    <div class="text-center py-8 text-gray-500 italic">
-                        Belum ada riwayat transaksi.
-                    </div>
-                @endif
-
             </div>
         </div>
     </div>
