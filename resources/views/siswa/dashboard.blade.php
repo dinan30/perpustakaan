@@ -11,7 +11,7 @@
             {{-- Alert Messages --}}
             @if(session('success'))
                 <div class="bg-emerald-50 text-emerald-600 p-5 rounded-2xl border border-emerald-100 flex items-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
                     <span class="font-bold">{{ session('success') }}</span>
@@ -20,7 +20,7 @@
 
             @if(session('error'))
                 <div class="bg-red-50 text-red-600 p-5 rounded-2xl border border-red-100 flex items-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                     <span class="font-bold">{{ session('error') }}</span>
@@ -34,7 +34,7 @@
                         <h4 class="text-4xl font-black text-gray-800 mt-1">{{ $pinjamanSaya->count() }} <span class="text-lg font-medium text-gray-400">Buku</span></h4>
                     </div>
                     <div class="p-4 bg-indigo-50 rounded-2xl text-indigo-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                         </svg>
                     </div>
@@ -66,24 +66,24 @@
                     <a href="{{ route('siswa.riwayat') }}" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 uppercase tracking-widest transition-colors">Lihat Semua &rarr;</a>
                 </div>
                 
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
                     <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-gray-50/50">
-                                <th class="px-8 py-4 text-xs font-black text-gray-400 uppercase tracking-widest border-b border-gray-100">Buku</th>
-                                <th class="px-8 py-4 text-xs font-black text-gray-400 uppercase tracking-widest border-b border-gray-100">Tgl Pinjam</th>
-                                <th class="px-8 py-4 text-xs font-black text-gray-400 uppercase tracking-widest border-b border-gray-100">Status</th>
-                                <th class="px-8 py-4 text-xs font-black text-gray-400 uppercase tracking-widest border-b border-gray-100 text-center">Aksi</th>
+                        <thead class="bg-gradient-to-r from-indigo-50 to-blue-50 border-b border-gray-200">
+                            <tr>
+                                <th class="px-8 py-4 text-xs font-black text-indigo-800 uppercase tracking-widest border-b border-gray-100">Buku</th>
+                                <th class="px-8 py-4 text-xs font-black text-indigo-800 uppercase tracking-widest border-b border-gray-100">Tgl Pinjam</th>
+                                <th class="px-8 py-4 text-xs font-black text-indigo-800 uppercase tracking-widest border-b border-gray-100">Status</th>
+                                <th class="px-8 py-4 text-xs font-black text-indigo-800 uppercase tracking-widest border-b border-gray-100 text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-50">
+                        <tbody class="divide-y divide-gray-100">
                             @forelse($pinjamanSaya->take(5) as $item)
-                            <tr class="hover:bg-slate-50/50 transition-colors group">
+                            <tr class="hover:bg-indigo-50/50 transition-colors even:bg-slate-50/50 group">
                                 <td class="px-8 py-6">
                                     <div class="flex items-center gap-4 min-w-[200px]">
-                                        <div class="w-12 h-12 shrink-0 bg-indigo-50 rounded-xl flex flex-col items-center justify-center text-indigo-600 shadow-sm border border-indigo-100">
-                                            <span class="text-[9px] font-black leading-none uppercase">Code</span>
-                                            <span class="text-[11px] font-bold">{{ $item->buku->kode_buku ?? '-' }}</span>
+                                        <div class="px-3 py-2 shrink-0 bg-indigo-50 rounded-xl flex flex-col items-center justify-center text-indigo-600 shadow-sm border border-indigo-100 min-w-[60px]">
+                                            <span class="text-[8px] font-black leading-none uppercase tracking-widest mb-1 opacity-80">Kode</span>
+                                            <span class="text-xs font-black leading-none">{{ $item->buku->kode_buku ?? '-' }}</span>
                                         </div>
                                         <div class="truncate">
                                             <p class="text-sm font-bold text-gray-800 leading-tight truncate">{{ $item->buku->judul ?? 'Buku Dihapus' }}</p>

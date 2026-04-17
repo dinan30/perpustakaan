@@ -20,24 +20,28 @@
                     </div>
                 @endif
 
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200 border">
-                        <thead class="bg-gray-50">
+                <div class="overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gradient-to-r from-indigo-50 to-blue-50 border-b border-gray-200">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-black text-gray-500 uppercase tracking-widest">Kode</th>
-                                <th class="px-6 py-3 text-left text-xs font-black text-gray-500 uppercase tracking-widest">Judul</th>
-                                <th class="px-6 py-3 text-left text-xs font-black text-gray-500 uppercase tracking-widest">Penulis</th>
-                                <th class="px-6 py-3 text-left text-xs font-black text-gray-500 uppercase tracking-widest">Kategori</th>
-                                <th class="px-6 py-3 text-left text-xs font-black text-gray-500 uppercase tracking-widest">Stok</th>
-                                <th class="px-6 py-3 text-center text-xs font-black text-gray-500 uppercase tracking-widest">Aksi</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-widest">Kode</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-widest">Judul</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-widest">Penulis</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-widest">Penerbit</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-widest">Tahun Terbit</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-widest">Kategori</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-widest">Stok</th>
+                                <th class="px-6 py-4 text-center text-xs font-black text-indigo-800 uppercase tracking-widest">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="bg-white divide-y divide-gray-100">
                             @forelse($buku as $item)
-                                <tr class="hover:bg-gray-50 transition">
+                                <tr class="hover:bg-indigo-50/50 transition-colors even:bg-slate-50/50">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-indigo-600">{{ $item->kode_buku }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">{{ $item->judul }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->penulis }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->penerbit }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->tahun_terbit }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 italic">{{ $item->kategori }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                                         <span class="px-2 py-1 {{ $item->stok > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} rounded-lg text-xs font-bold">
@@ -57,7 +61,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-6 py-10 text-center text-gray-500 font-medium italic">Belum ada koleksi buku.</td>
+                                    <td colspan="8" class="px-6 py-10 text-center text-gray-500 font-medium italic">Belum ada koleksi buku.</td>
                                 </tr>
                             @endforelse
                         </tbody>

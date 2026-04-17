@@ -21,21 +21,21 @@
                     </div>
                 @endif
 
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200 border">
-                        <thead class="bg-gray-50">
+                <div class="overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gradient-to-r from-indigo-50 to-blue-50 border-b border-gray-200">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alamat</th>
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider">No</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider">Nama</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider">Email</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider">Alamat</th>
+                                <th class="px-6 py-4 text-center text-xs font-black text-indigo-800 uppercase tracking-wider">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="bg-white divide-y divide-gray-100">
                             @forelse($users as $index => $user)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <tr class="hover:bg-indigo-50/50 transition-colors even:bg-slate-50/50 group">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-500 group-hover:text-indigo-600 transition-colors">
                                         {{ $index + 1 }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -50,7 +50,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                                         <div class="flex justify-center gap-3">
                                             {{-- Tombol Edit --}}
-                                            <a href="{{ route('users.edit', $user->id) }}" class="text-indigo-600 hover:text-indigo-900">
+                                            <a href="{{ route('users.edit', $user->id) }}" class="text-indigo-600 hover:text-indigo-900 font-bold transition-colors">
                                                 Edit
                                             </a>
 
@@ -58,7 +58,7 @@
                                             <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus anggota ini?')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900">
+                                                <button type="submit" class="text-red-600 hover:text-red-900 font-bold transition-colors">
                                                     Hapus
                                                 </button>
                                             </form>
@@ -67,7 +67,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                    <td colspan="5" class="px-6 py-10 text-center text-gray-500 italic font-medium">
                                         Belum ada data anggota.
                                     </td>
                                 </tr>

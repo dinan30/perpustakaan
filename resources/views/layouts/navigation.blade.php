@@ -79,10 +79,10 @@
                                 {{ __('My Profile') }}
                             </x-dropdown-link>
 
-                            <form method="POST" action="{{ route('logout') }}">
+                            <form method="POST" action="{{ route('logout') }}" id="logout-form">
                                 @csrf
-                                <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault(); this.closest('form').submit();"
+                                <x-dropdown-link href="#"
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                                     class="text-red-600 font-black">
                                     {{ __('Keluar Aplikasi') }}
                                 </x-dropdown-link>
@@ -145,10 +145,10 @@
                 <x-responsive-nav-link :href="route('profile.edit')" class="font-bold">
                     {{ __('Settings') }}
                 </x-responsive-nav-link>
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('logout') }}" id="mobile-logout-form">
                     @csrf
-                    <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault(); this.closest('form').submit();"
+                    <x-responsive-nav-link href="#"
+                        onclick="event.preventDefault(); document.getElementById('mobile-logout-form').submit();"
                         class="font-black text-red-600">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>

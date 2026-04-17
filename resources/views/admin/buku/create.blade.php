@@ -13,8 +13,8 @@
 
                     <div class="mb-6">
                         <x-input-label for="kode_buku" :value="__('Kode Buku')" />
-                        <x-text-input id="kode_buku" class="block mt-1 w-full bg-gray-50 font-bold" type="text" name="kode_buku" :value="old('kode_buku')" required placeholder="Contoh: BK-001" autofocus />
-                        <x-input-error :messages="$errors->get('kode_buku')" class="mt-2" />
+                        <x-text-input id="kode_buku" class="block mt-1 w-full bg-gray-50 font-bold {{ $errors->has('kode_buku') ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : '' }}" type="text" name="kode_buku" :value="old('kode_buku')" required placeholder="Contoh: BK-001" autofocus />
+                        <x-input-error :messages="$errors->get('kode_buku')" class="mt-2 text-red-600 font-bold" />
                     </div>
 
                     <div class="mb-6">

@@ -31,12 +31,15 @@ class BukuController extends Controller
     public function store(Request $request)
 {
     $request->validate([
+        'kode_buku'    => 'required|string|max:50|unique:buku,kode_buku',
         'judul'        => 'required|string|max:255',
         'penulis'      => 'required|string|max:255',
         'penerbit'     => 'required|string|max:255',
         'kategori'     => 'required|string|max:100', // Pastikan ini ada
         'tahun_terbit' => 'required|integer',
         'stok'         => 'required|integer|min:0',
+    ], [
+        'kode_buku.unique' => 'Kode buku ini sudah ada di dalam database. Silakan gunakan kode buku yang lain.',
     ]);
 
     Buku::create($request->all());

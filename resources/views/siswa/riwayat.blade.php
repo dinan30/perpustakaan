@@ -30,26 +30,26 @@
             <div class="bg-white overflow-hidden shadow-sm rounded-3xl border border-gray-100 p-8">
                 <h3 class="font-black text-gray-800 mb-6 uppercase text-sm tracking-widest border-b pb-4">Semua Riwayat</h3>
                 
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
                     <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-gray-50/50">
-                                <th class="px-8 py-4 text-xs font-black text-gray-400 uppercase tracking-widest border-b border-gray-100">Buku</th>
-                                <th class="px-8 py-4 text-xs font-black text-gray-400 uppercase tracking-widest border-b border-gray-100">Tgl Pinjam</th>
-                                <th class="px-8 py-4 text-xs font-black text-gray-400 uppercase tracking-widest border-b border-gray-100">Batas Kembali</th>
-                                <th class="px-8 py-4 text-xs font-black text-gray-400 uppercase tracking-widest border-b border-gray-100 text-center">Status</th>
-                                <th class="px-8 py-4 text-xs font-black text-gray-400 uppercase tracking-widest border-b border-gray-100 text-center">Denda</th>
-                                <th class="px-8 py-4 text-xs font-black text-gray-400 uppercase tracking-widest border-b border-gray-100 text-center">Aksi</th>
+                        <thead class="bg-gradient-to-r from-indigo-50 to-blue-50 border-b border-gray-200">
+                            <tr>
+                                <th class="px-8 py-4 text-xs font-black text-indigo-800 uppercase tracking-widest border-b border-gray-100">Buku</th>
+                                <th class="px-8 py-4 text-xs font-black text-indigo-800 uppercase tracking-widest border-b border-gray-100">Tgl Pinjam</th>
+                                <th class="px-8 py-4 text-xs font-black text-indigo-800 uppercase tracking-widest border-b border-gray-100">Batas Kembali</th>
+                                <th class="px-8 py-4 text-xs font-black text-indigo-800 uppercase tracking-widest border-b border-gray-100 text-center">Status</th>
+                                <th class="px-8 py-4 text-xs font-black text-indigo-800 uppercase tracking-widest border-b border-gray-100 text-center">Denda</th>
+                                <th class="px-8 py-4 text-xs font-black text-indigo-800 uppercase tracking-widest border-b border-gray-100 text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-50">
+                        <tbody class="divide-y divide-gray-100">
                             @forelse($pinjamanSaya as $item)
-                            <tr class="hover:bg-slate-50/50 transition-colors group">
+                            <tr class="hover:bg-indigo-50/50 transition-colors even:bg-slate-50/50 group">
                                 <td class="px-8 py-6">
                                     <div class="flex items-center gap-4 min-w-[200px]">
-                                        <div class="w-12 h-12 shrink-0 bg-indigo-50 rounded-xl flex flex-col items-center justify-center text-indigo-600 shadow-sm border border-indigo-100">
-                                            <span class="text-[9px] font-black leading-none uppercase">Code</span>
-                                            <span class="text-[11px] font-bold">{{ $item->buku->kode_buku ?? '-' }}</span>
+                                        <div class="px-3 py-2 shrink-0 bg-indigo-50 rounded-xl flex flex-col items-center justify-center text-indigo-600 shadow-sm border border-indigo-100 min-w-[60px]">
+                                            <span class="text-[8px] font-black leading-none uppercase tracking-widest mb-1 opacity-80">Kode</span>
+                                            <span class="text-xs font-black leading-none">{{ $item->buku->kode_buku ?? '-' }}</span>
                                         </div>
                                         <div class="truncate">
                                             <p class="text-sm font-bold text-gray-800 leading-tight truncate">{{ $item->buku->judul ?? 'Buku Dihapus' }}</p>
