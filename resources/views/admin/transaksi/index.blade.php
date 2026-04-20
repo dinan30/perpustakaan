@@ -76,6 +76,8 @@
                                     <span class="px-2 py-1 rounded-full text-[10px] font-bold bg-yellow-100 text-yellow-700">MENUNGGU</span>
                                 @elseif($item->status == 'pinjam')
                                     <span class="px-2 py-1 rounded-full text-[10px] font-bold bg-orange-100 text-orange-700">PINJAM</span>
+                                @elseif($item->status == 'menunggu_kembali')
+                                    <span class="px-2 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700">VERIFIKASI KEMBALI</span>
                                 @elseif($item->status == 'ditolak')
                                     <span class="px-2 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700">DITOLAK</span>
                                 @else
@@ -110,10 +112,10 @@
                                         </form>
                                     @endif
 
-                                    {{-- TOMBOL PENGEMBALIAN (Hanya muncul jika status 'pinjam') --}}
-                                    @if($item->status == 'pinjam')
+                                    {{-- TOMBOL PENGEMBALIAN (Hanya muncul jika status 'pinjam' atau 'menunggu_kembali') --}}
+                                    @if(in_array($item->status, ['pinjam', 'menunggu_kembali']))
                                         <button type="button" onclick="openKembaliModal({{ $item->id }}, '{{ $item->buku->judul }}', '{{ \Carbon\Carbon::parse($item->tanggal_kembali)->format('Y-m-d') }}')" class="bg-green-500 hover:bg-green-600 text-white text-[11px] px-3 py-1 rounded shadow-sm transition">
-                                            Kembalikan
+                                            @if($item->status == 'menunggu_kembali') Verifikasi @else Kembalikan @endif
                                         </button>
                                     @endif
 

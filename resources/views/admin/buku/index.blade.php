@@ -48,43 +48,57 @@
                         <thead class="bg-gradient-to-r from-indigo-50 to-blue-50 border-b border-gray-200 sticky top-0 z-20">
                             <tr>
                                 <th class="px-4 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-widest bg-indigo-50/90 backdrop-blur-sm">Kode</th>
+                                <th class="px-4 py-4 text-center text-xs font-black text-indigo-800 uppercase tracking-widest bg-indigo-50/90 backdrop-blur-sm">Cover</th>
                                 <th class="px-4 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-widest bg-indigo-50/90 backdrop-blur-sm">Judul</th>
                                 <th class="px-4 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-widest bg-indigo-50/90 backdrop-blur-sm">Penulis</th>
                                 <th class="px-4 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-widest bg-indigo-50/90 backdrop-blur-sm">Penerbit</th>
                                 <th class="px-4 py-4 text-center text-xs font-black text-indigo-800 uppercase tracking-widest bg-indigo-50/90 backdrop-blur-sm">Tahun Terbit</th>
                                 <th class="px-4 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-widest bg-indigo-50/90 backdrop-blur-sm">Kategori</th>
                                 <th class="px-4 py-4 text-center text-xs font-black text-indigo-800 uppercase tracking-widest bg-indigo-50/90 backdrop-blur-sm">Stok</th>
-                                <th class="px-4 py-4 text-center text-xs font-black text-indigo-800 uppercase tracking-widest border-l border-gray-200 bg-indigo-100/90 backdrop-blur-sm sticky right-0 z-30">Aksi</th>
+                                <th class="px-4 py-4 text-center text-xs font-black text-indigo-800 uppercase tracking-widest border-l border-gray-200 bg-indigo-50/90 backdrop-blur-sm sticky right-0 z-30">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-100">
                             @forelse($buku as $item)
                                 <tr class="hover:bg-indigo-50/50 transition-colors even:bg-slate-50/50 group">
-                                    <td class="px-4 py-4 whitespace-nowrap text-sm font-bold text-indigo-600">{{ $item->kode_buku }}</td>
-                                    <td class="px-4 py-4 whitespace-normal min-w-[150px] max-w-[200px] text-sm text-gray-900 font-medium leading-tight">{{ $item->judul }}</td>
-                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->penulis }}</td>
-                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->penerbit }}</td>
-                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 text-center">{{ $item->tahun_terbit }}</td>
+                                    <td class="px-4 py-4 whitespace-nowrap text-sm font-black text-indigo-600">{{ $item->kode_buku }}</td>
+                                    <td class="px-4 py-4 whitespace-nowrap text-center">
+                                        @if($item->cover)
+                                            <img src="{{ asset('storage/' . $item->cover) }}" alt="Cover" class="w-12 h-16 object-cover rounded-md shadow-md border border-gray-200 mx-auto transition-transform hover:scale-110">
+                                        @else
+                                            <div class="w-12 h-16 bg-gray-50 rounded-md flex items-center justify-center mx-auto text-[10px] text-gray-400 font-medium text-center leading-tight p-1 shadow-inner border border-gray-200">
+                                                No<br>Cover
+                                            </div>
+                                        @endif
+                                    </td>
+                                    <td class="px-4 py-4 whitespace-normal min-w-[150px] max-w-[200px] text-sm text-gray-900 font-bold leading-tight">{{ $item->judul }}</td>
+                                    <td class="px-4 py-4 whitespace-normal max-w-[150px] text-sm text-gray-600 truncate">{{ $item->penulis }}</td>
+                                    <td class="px-4 py-4 whitespace-normal max-w-[150px] text-sm text-gray-600 truncate">{{ $item->penerbit }}</td>
+                                    <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-500 text-center">{{ $item->tahun_terbit }}</td>
                                     <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 italic">{{ $item->kategori }}</td>
                                     <td class="px-4 py-4 whitespace-nowrap text-sm text-center">
-                                        <span class="px-2 py-1 {{ $item->stok > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} rounded-lg text-xs font-bold">
+                                        <span class="px-3 py-1 {{ $item->stok > 0 ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-red-100 text-red-700 border border-red-200' }} rounded-full text-xs font-bold shadow-sm">
                                             {{ $item->stok }}
                                         </span>
                                     </td>
-                                    <td class="px-4 py-4 whitespace-nowrap text-center text-sm font-medium border-l border-gray-100 bg-white group-hover:bg-indigo-50/50 sticky right-0 z-10">
-                                        <div class="flex justify-center gap-3">
-                                            <a href="{{ route('buku.edit', $item->id) }}" class="text-indigo-600 hover:text-indigo-900 font-bold transition-colors">Edit</a>
-                                            <form action="{{ route('buku.destroy', $item->id) }}" method="POST" class="inline" onsubmit="return confirm('Hapus buku ini?')">
+                                    <td class="px-4 py-4 whitespace-nowrap text-center text-sm font-medium border-l border-gray-100 bg-white group-hover:bg-indigo-50/50 sticky right-0 z-10 transition-colors">
+                                        <div class="flex justify-center gap-2">
+                                            <a href="{{ route('buku.edit', $item->id) }}" class="inline-flex items-center px-3 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:text-indigo-900 rounded-lg text-xs font-bold transition-all shadow-sm">
+                                                Edit
+                                            </a>
+                                            <form action="{{ route('buku.destroy', $item->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900 font-bold transition-colors">Hapus</button>
+                                                <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-900 rounded-lg text-xs font-bold transition-all shadow-sm">
+                                                    Hapus
+                                                </button>
                                             </form>
                                         </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="px-6 py-10 text-center text-gray-500 font-medium italic">Belum ada koleksi buku.</td>
+                                    <td colspan="9" class="px-6 py-10 text-center text-gray-500 font-medium italic">Belum ada koleksi buku.</td>
                                 </tr>
                             @endforelse
                         </tbody>

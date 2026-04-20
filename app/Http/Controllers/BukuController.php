@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Buku;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BukuController extends Controller
 {
@@ -40,23 +41,34 @@ class BukuController extends Controller
      * Simpan buku baru.
      */
     public function store(Request $request)
-{
-    $request->validate([
-        'kode_buku'    => 'required|string|max:50|unique:buku,kode_buku',
-        'judul'        => 'required|string|max:255',
-        'penulis'      => 'required|string|max:255',
-        'penerbit'     => 'required|string|max:255',
-        'kategori'     => 'required|string|max:100', // Pastikan ini ada
-        'tahun_terbit' => 'required|integer',
-        'stok'         => 'required|integer|min:0',
-    ], [
-        'kode_buku.unique' => 'Kode buku ini sudah ada di dalam database. Silakan gunakan kode buku yang lain.',
-    ]);
+    {
+        $request->validate([
+            'kode_buku'    => 'required|string|max:50|unique:buku,kode_buku',
+            'judul'        => 'required|string|max:255',
+            'penulis'      => 'required|string|max:255',
+            'penerbit'     => 'required|string|max:255',
+            'kategori'     => 'required|string|max:100', // Pastikan ini ada
+            'tahun_terbit' => 'required|integer',
+            'stok'         => 'required|integer|min:0',
+            'cover'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'kode_buku.unique' => 'Kode buku ini sudah ada di dalam database. Silakan gunakan kode buku yang lain.',
+            'cover.image'      => 'File harus berupa gambar.',
+            'cover.max'        => 'Ukuran gambar maksimal 2MB.',
+        ]);
 
-    Buku::create($request->all());
+        $data = $request->all();
 
-    return redirect()->route('buku.index')->with('success', 'Buku berhasil ditambahkan!');
-}
+        // Upload Cover
+        if ($request->hasFile('cover')) {
+            $coverPath = $request->file('cover')->store('covers', 'public');
+            $data['cover'] = $coverPath;
+        }
+
+        Buku::create($data);
+
+        return redirect()->route('buku.index')->with('success', 'Buku berhasil ditambahkan!');
+    }
 
     /**
      * Form edit buku.
@@ -76,11 +88,28 @@ class BukuController extends Controller
             'judul'        => 'required|string|max:255',
             'penulis'      => 'required|string|max:255',
             'penerbit'     => 'required|string|max:255',
+            'kategori'     => 'required|string|max:100',
             'tahun_terbit' => 'required|integer',
             'stok'         => 'required|integer|min:0',
+            'cover'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'cover.image' => 'File harus berupa gambar.',
+            'cover.max'   => 'Ukuran gambar maksimal 2MB.',
         ]);
 
-        $buku->update($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('cover')) {
+            // Hapus cover lama jika ada
+            if ($buku->cover && Storage::disk('public')->exists($buku->cover)) {
+                Storage::disk('public')->delete($buku->cover);
+            }
+            // Simpan cover baru
+            $coverPath = $request->file('cover')->store('covers', 'public');
+            $data['cover'] = $coverPath;
+        }
+
+        $buku->update($data);
 
         return redirect()->route('buku.index')->with('success', 'Data buku berhasil diperbarui!');
     }
@@ -90,6 +119,11 @@ class BukuController extends Controller
      */
     public function destroy(Buku $buku)
     {
+        // Hapus cover dari storage jika ada
+        if ($buku->cover && Storage::disk('public')->exists($buku->cover)) {
+            Storage::disk('public')->delete($buku->cover);
+        }
+        
         $buku->delete();
 
         return redirect()->route('buku.index')->with('success', 'Buku berhasil dihapus!');

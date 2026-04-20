@@ -70,6 +70,8 @@
                                         <span class="px-4 py-2 bg-yellow-50 text-yellow-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-yellow-100">Menunggu</span>
                                     @elseif($item->status === 'pinjam')
                                         <span class="px-4 py-2 bg-orange-50 text-orange-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-orange-100">Dipinjam</span>
+                                    @elseif($item->status === 'menunggu_kembali')
+                                        <span class="px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-blue-100">Proses Kembali</span>
                                     @elseif($item->status === 'ditolak')
                                         <span class="px-4 py-2 bg-red-50 text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-red-100">Ditolak</span>
                                     @else
@@ -88,6 +90,8 @@
                                                 Kembalikan
                                             </button>
                                         </form>
+                                    @elseif($item->status === 'menunggu_kembali')
+                                        <span class="text-blue-500 text-[10px] font-black uppercase tracking-widest bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100">Menunggu Verifikasi</span>
                                     @else
                                         <span class="text-gray-300 text-xs font-medium">-</span>
                                     @endif

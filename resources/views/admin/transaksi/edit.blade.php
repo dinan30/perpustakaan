@@ -39,6 +39,7 @@
                         <select name="status" id="status" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                             <option value="menunggu" {{ $transaksi->status == 'menunggu' ? 'selected' : '' }}>Menunggu Persetujuan</option>
                             <option value="pinjam" {{ $transaksi->status == 'pinjam' ? 'selected' : '' }}>Masih Dipinjam</option>
+                            <option value="menunggu_kembali" {{ $transaksi->status == 'menunggu_kembali' ? 'selected' : '' }}>Menunggu Verifikasi Pengembalian</option>
                             <option value="kembali" {{ $transaksi->status == 'kembali' ? 'selected' : '' }}>Sudah Dikembalikan</option>
                             <option value="ditolak" {{ $transaksi->status == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                         </select>

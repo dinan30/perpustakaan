@@ -55,7 +55,7 @@ class TransaksiController extends Controller
     {
         $transaksi = Transaksi::findOrFail($id);
 
-        if ($transaksi->status === 'pinjam') {
+        if (in_array($transaksi->status, ['pinjam', 'menunggu_kembali'])) {
             // Ambil tanggal pengembalian aktual dari form admin, atau gunakan hari ini jika tidak ada
             $tanggalDikembalikan = $request->input('tanggal_dikembalikan', date('Y-m-d'));
 
@@ -127,8 +127,8 @@ class TransaksiController extends Controller
     {
         $transaksi = Transaksi::findOrFail($id);
 
-        // Jika transaksi masih berstatus "pinjam" atau "menunggu", kita harus mengembalikan stok bukunya terlebih dahulu
-        if (in_array($transaksi->status, ['pinjam', 'menunggu'])) {
+        // Jika transaksi masih berstatus "pinjam", "menunggu", atau "menunggu_kembali", kita harus mengembalikan stok bukunya terlebih dahulu
+        if (in_array($transaksi->status, ['pinjam', 'menunggu', 'menunggu_kembali'])) {
             $buku = Buku::find($transaksi->buku_id);
             if ($buku) {
                 $buku->increment('stok');
@@ -153,7 +153,7 @@ class TransaksiController extends Controller
         $request->validate([
             'tanggal_pinjam' => 'required|date',
             'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
-            'status' => 'required|in:menunggu,pinjam,kembali,ditolak',
+            'status' => 'required|in:menunggu,pinjam,menunggu_kembali,kembali,ditolak',
         ]);
 
         // Simpan status lama untuk mengecek perubahan stok buku
@@ -170,18 +170,18 @@ class TransaksiController extends Controller
         if ($statusLama != $statusBaru) {
             $buku = Buku::find($transaksi->buku_id);
             if ($buku) {
-                // Jika dari pinjam/menunggu berubah menjadi kembali/ditolak -> stok bertambah
-                if (in_array($statusLama, ['pinjam', 'menunggu']) && in_array($statusBaru, ['kembali', 'ditolak'])) {
+                // Jika dari pinjam/menunggu/menunggu_kembali berubah menjadi kembali/ditolak -> stok bertambah
+                if (in_array($statusLama, ['pinjam', 'menunggu', 'menunggu_kembali']) && in_array($statusBaru, ['kembali', 'ditolak'])) {
                     $buku->increment('stok');
                 }
-                // Jika dari kembali/ditolak berubah menjadi pinjam/menunggu -> stok berkurang
-                elseif (in_array($statusLama, ['kembali', 'ditolak']) && in_array($statusBaru, ['pinjam', 'menunggu'])) {
+                // Jika dari kembali/ditolak berubah menjadi pinjam/menunggu/menunggu_kembali -> stok berkurang
+                elseif (in_array($statusLama, ['kembali', 'ditolak']) && in_array($statusBaru, ['pinjam', 'menunggu', 'menunggu_kembali'])) {
                     if ($buku->stok > 0) {
                         $buku->decrement('stok');
                     } else {
                         // Batalkan update jika stok habis
                         $transaksi->update(['status' => $statusLama]);
-                        return back()->with('error', 'Stok buku habis! Tidak bisa mengubah status menjadi pinjam/menunggu.');
+                        return back()->with('error', 'Stok buku habis! Tidak bisa mengubah status.');
                     }
                 }
             }

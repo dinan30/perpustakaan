@@ -18,7 +18,7 @@ class PerpustakaanController extends Controller
 
         $data = [
             'total_buku' => Buku::count(),
-            'total_pinjam' => Transaksi::where('status', 'pinjam')->count(),
+            'total_pinjam' => Transaksi::whereIn('status', ['pinjam', 'menunggu_kembali'])->count(),
             'transaksi_terbaru' => Transaksi::with(['user', 'buku'])->latest()->take(10)->get()
         ];
 
@@ -86,13 +86,13 @@ class PerpustakaanController extends Controller
     {
         $transaksi = Transaksi::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
 
-        if ($transaksi->status === 'kembali') {
-            return back()->with('error', 'Buku ini sudah dikembalikan.');
+        if ($transaksi->status === 'kembali' || $transaksi->status === 'menunggu_kembali') {
+            return back()->with('error', 'Buku ini sudah dalam proses pengembalian atau sudah dikembalikan.');
         }
 
-        $transaksi->update(['status' => 'kembali']);
-        Buku::find($transaksi->buku_id)->increment('stok');
+        $transaksi->update(['status' => 'menunggu_kembali']);
+        // Stok buku tidak ditambahkan di sini, tunggu verifikasi dari Admin
 
-        return back()->with('success', 'Terima kasih! Buku telah dikembalikan.');
+        return back()->with('success', 'Terima kasih! Pengembalian buku sedang menunggu verifikasi admin.');
     }
 }
