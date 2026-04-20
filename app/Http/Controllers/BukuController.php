@@ -10,10 +10,21 @@ class BukuController extends Controller
     /**
      * Menampilkan daftar buku.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $query = Buku::query();
+
+        // Fitur Pencarian Cepat (Quick Search)
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where('judul', 'like', "%{$search}%")
+                  ->orWhere('kode_buku', 'like', "%{$search}%")
+                  ->orWhere('penulis', 'like', "%{$search}%")
+                  ->orWhere('kategori', 'like', "%{$search}%");
+        }
+
         // Mengambil data buku terbaru
-        $buku = Buku::latest()->get();
+        $buku = $query->latest()->get();
         return view('admin.buku.index', compact('buku'));
     }
 

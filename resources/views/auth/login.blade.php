@@ -24,23 +24,17 @@
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-5">
-            <label for="remember_me" class="inline-flex items-center cursor-pointer">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600 font-medium">{{ __('Ingat saya') }}</span>
-            </label>
-        </div>
-
         <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-100">
-            @if (Route::has('password.request'))
-                <a class="text-sm font-bold text-indigo-600 hover:text-indigo-800 transition-colors" href="{{ route('password.request') }}">
-                    {{ __('Lupa password?') }}
-                </a>
-            @endif
+            <!-- Remember Me -->
+            <div class="block">
+                <label for="remember_me" class="inline-flex items-center cursor-pointer">
+                    <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
+                    <span class="ms-2 text-sm text-gray-600 font-medium">{{ __('Ingat saya') }}</span>
+                </label>
+            </div>
 
             <x-primary-button class="bg-indigo-600 hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-800 px-6 py-3 rounded-xl shadow-lg shadow-indigo-200 transition-all font-black tracking-widest">
-                {{ __('Masuk') }}
+                {{ __('Login') }}
             </x-primary-button>
         </div>
         

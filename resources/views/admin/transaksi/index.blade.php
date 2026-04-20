@@ -33,17 +33,17 @@
                     </div>
                 @endif
 
-                <div class="overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gradient-to-r from-indigo-50 to-blue-50 border-b border-gray-200">
+                <div class="overflow-x-auto overflow-y-auto max-h-[500px] rounded-xl border border-gray-100 shadow-sm">
+                    <table class="min-w-full divide-y divide-gray-200 relative">
+                        <thead class="bg-gradient-to-r from-indigo-50 to-blue-50 border-b border-gray-200 sticky top-0 z-20">
                             <tr>
-                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider">Peminjam</th>
-                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider">Buku</th>
-                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider">Tgl Pinjam</th>
-                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider">Batas Kembali</th>
-                                <th class="px-6 py-4 text-center text-xs font-black text-indigo-800 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider">Denda</th>
-                                <th class="px-6 py-4 text-center text-xs font-black text-indigo-800 uppercase tracking-wider">Aksi</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider bg-indigo-50/90 backdrop-blur-sm">Peminjam</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider bg-indigo-50/90 backdrop-blur-sm">Buku</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider bg-indigo-50/90 backdrop-blur-sm">Tgl Pinjam</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider bg-indigo-50/90 backdrop-blur-sm">Batas Kembali</th>
+                                <th class="px-6 py-4 text-center text-xs font-black text-indigo-800 uppercase tracking-wider bg-indigo-50/90 backdrop-blur-sm">Status</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider bg-indigo-50/90 backdrop-blur-sm">Denda</th>
+                                <th class="px-6 py-4 text-center text-xs font-black text-indigo-800 uppercase tracking-wider border-l border-gray-200 bg-indigo-100/90 backdrop-blur-sm sticky right-0 z-30">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100 bg-white">
@@ -89,8 +89,8 @@
                             </td>
 
                             {{-- Grup Tombol Aksi --}}
-                            <td class="px-4 py-4 text-center text-sm font-medium">
-                                <div class="flex justify-center items-center gap-2">
+                            <td class="px-6 py-4 text-center text-sm font-medium border-l border-gray-100 bg-white group-hover:bg-indigo-50/50 sticky right-0 z-10">
+                                    <div class="flex justify-center items-center gap-2">
                                     
                                     {{-- TOMBOL PERSETUJUAN (Hanya muncul jika status 'menunggu') --}}
                                     @if($item->status == 'menunggu')

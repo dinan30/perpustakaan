@@ -21,15 +21,15 @@
                     </div>
                 @endif
 
-                <div class="overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gradient-to-r from-indigo-50 to-blue-50 border-b border-gray-200">
+                <div class="overflow-x-auto overflow-y-auto max-h-[500px] rounded-xl border border-gray-100 shadow-sm">
+                    <table class="min-w-full divide-y divide-gray-200 relative">
+                        <thead class="bg-gradient-to-r from-indigo-50 to-blue-50 border-b border-gray-200 sticky top-0 z-20">
                             <tr>
-                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider">No</th>
-                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider">Nama</th>
-                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider">Email</th>
-                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider">Alamat</th>
-                                <th class="px-6 py-4 text-center text-xs font-black text-indigo-800 uppercase tracking-wider">Aksi</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider bg-indigo-50/90 backdrop-blur-sm">No</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider bg-indigo-50/90 backdrop-blur-sm">Nama</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider bg-indigo-50/90 backdrop-blur-sm">Email</th>
+                                <th class="px-6 py-4 text-left text-xs font-black text-indigo-800 uppercase tracking-wider bg-indigo-50/90 backdrop-blur-sm">Alamat</th>
+                                <th class="px-6 py-4 text-center text-xs font-black text-indigo-800 uppercase tracking-wider border-l border-gray-200 bg-indigo-100/90 backdrop-blur-sm sticky right-0 z-30">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-100">
@@ -47,7 +47,7 @@
                                     <td class="px-6 py-4 text-sm text-gray-500">
                                         {{ $user->alamat ?? '-' }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium border-l border-gray-100 bg-white group-hover:bg-indigo-50/50 sticky right-0 z-10">
                                         <div class="flex justify-center gap-3">
                                             {{-- Tombol Edit --}}
                                             <a href="{{ route('users.edit', $user->id) }}" class="text-indigo-600 hover:text-indigo-900 font-bold transition-colors">
