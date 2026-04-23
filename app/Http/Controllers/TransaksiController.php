@@ -97,8 +97,17 @@ class TransaksiController extends Controller
         $transaksi = Transaksi::findOrFail($id);
 
         if ($transaksi->status === 'menunggu') {
-            $transaksi->update(['status' => 'pinjam']);
-            return redirect()->route('transaksi.index')->with('success', 'Peminjaman disetujui.');
+            $buku = Buku::find($transaksi->buku_id);
+            
+            if ($buku && $buku->stok > 0) {
+                $buku->decrement('stok');
+                $transaksi->update(['status' => 'pinjam']);
+                return redirect()->route('transaksi.index')->with('success', 'Peminjaman disetujui. Stok buku telah dikurangi.');
+            } else {
+                // Jika stok habis saat admin akan menyetujui
+                $transaksi->update(['status' => 'ditolak']);
+                return redirect()->route('transaksi.index')->with('error', 'Peminjaman ditolak otomatis karena stok buku habis.');
+            }
         }
 
         return redirect()->route('transaksi.index')->with('error', 'Transaksi tidak dapat disetujui.');
@@ -111,12 +120,8 @@ class TransaksiController extends Controller
         if ($transaksi->status === 'menunggu') {
             $transaksi->update(['status' => 'ditolak']);
 
-            // Kembalikan stok buku
-            $buku = Buku::find($transaksi->buku_id);
-            if ($buku) {
-                $buku->increment('stok');
-            }
-
+            // Karena stok tidak dikurangi saat 'menunggu', maka kita tidak perlu menambahkannya (increment) lagi saat ditolak.
+            
             return redirect()->route('transaksi.index')->with('success', 'Peminjaman ditolak.');
         }
 
@@ -127,8 +132,9 @@ class TransaksiController extends Controller
     {
         $transaksi = Transaksi::findOrFail($id);
 
-        // Jika transaksi masih berstatus "pinjam", "menunggu", atau "menunggu_kembali", kita harus mengembalikan stok bukunya terlebih dahulu
-        if (in_array($transaksi->status, ['pinjam', 'menunggu', 'menunggu_kembali'])) {
+        // Jika transaksi masih berstatus "pinjam" atau "menunggu_kembali", kita harus mengembalikan stok bukunya terlebih dahulu.
+        // Status "menunggu" tidak perlu mengembalikan stok karena belum dikurangi.
+        if (in_array($transaksi->status, ['pinjam', 'menunggu_kembali'])) {
             $buku = Buku::find($transaksi->buku_id);
             if ($buku) {
                 $buku->increment('stok');
@@ -170,18 +176,23 @@ class TransaksiController extends Controller
         if ($statusLama != $statusBaru) {
             $buku = Buku::find($transaksi->buku_id);
             if ($buku) {
-                // Jika dari pinjam/menunggu/menunggu_kembali berubah menjadi kembali/ditolak -> stok bertambah
-                if (in_array($statusLama, ['pinjam', 'menunggu', 'menunggu_kembali']) && in_array($statusBaru, ['kembali', 'ditolak'])) {
+                // Daftar status yang mana stok SUDAH dikurangi di database
+                $statusMemotongStok = ['pinjam', 'menunggu_kembali'];
+                // Daftar status yang mana stok BELUM/TIDAK dikurangi di database
+                $statusTidakMemotongStok = ['menunggu', 'kembali', 'ditolak'];
+
+                // Jika berubah dari status yang memotong stok menjadi status yang tidak memotong stok -> stok bertambah
+                if (in_array($statusLama, $statusMemotongStok) && in_array($statusBaru, $statusTidakMemotongStok)) {
                     $buku->increment('stok');
                 }
-                // Jika dari kembali/ditolak berubah menjadi pinjam/menunggu/menunggu_kembali -> stok berkurang
-                elseif (in_array($statusLama, ['kembali', 'ditolak']) && in_array($statusBaru, ['pinjam', 'menunggu', 'menunggu_kembali'])) {
+                // Jika berubah dari status yang tidak memotong stok menjadi status yang memotong stok -> stok berkurang
+                elseif (in_array($statusLama, $statusTidakMemotongStok) && in_array($statusBaru, $statusMemotongStok)) {
                     if ($buku->stok > 0) {
                         $buku->decrement('stok');
                     } else {
                         // Batalkan update jika stok habis
                         $transaksi->update(['status' => $statusLama]);
-                        return back()->with('error', 'Stok buku habis! Tidak bisa mengubah status.');
+                        return back()->with('error', 'Stok buku habis! Tidak bisa mengubah status menjadi Pinjam / Menunggu Kembali.');
                     }
                 }
             }

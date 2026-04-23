@@ -75,10 +75,7 @@
                                 class="px-4 py-2 text-xs text-gray-400 font-black uppercase tracking-widest border-b border-gray-100">
                                 Pengaturan Akun
                             </div>
-                            <x-dropdown-link :href="route('profile.edit')" class="font-bold">
-                                {{ __('My Profile') }}
-                            </x-dropdown-link>
-
+                           
                             <form method="POST" action="{{ route('logout') }}" id="logout-form">
                                 @csrf
                                 <x-dropdown-link href="#"

@@ -15,7 +15,7 @@ class BukuController extends Controller
     {
         $query = Buku::query();
 
-        // Fitur Pencarian Cepat (Quick Search)
+       
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where('judul', 'like', "%{$search}%")
@@ -24,22 +24,18 @@ class BukuController extends Controller
                   ->orWhere('kategori', 'like', "%{$search}%");
         }
 
-        // Mengambil data buku terbaru
+       
         $buku = $query->latest()->get();
         return view('admin.buku.index', compact('buku'));
     }
 
-    /**
-     * Form tambah buku.
-     */
+   
     public function create()
     {
         return view('admin.buku.create');
     }
 
-    /**
-     * Simpan buku baru.
-     */
+   
     public function store(Request $request)
     {
         $request->validate([
@@ -47,7 +43,7 @@ class BukuController extends Controller
             'judul'        => 'required|string|max:255',
             'penulis'      => 'required|string|max:255',
             'penerbit'     => 'required|string|max:255',
-            'kategori'     => 'required|string|max:100', // Pastikan ini ada
+            'kategori'     => 'required|string|max:100', 
             'tahun_terbit' => 'required|integer',
             'stok'         => 'required|integer|min:0',
             'cover'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -59,7 +55,7 @@ class BukuController extends Controller
 
         $data = $request->all();
 
-        // Upload Cover
+       
         if ($request->hasFile('cover')) {
             $coverPath = $request->file('cover')->store('covers', 'public');
             $data['cover'] = $coverPath;
@@ -70,18 +66,13 @@ class BukuController extends Controller
         return redirect()->route('buku.index')->with('success', 'Buku berhasil ditambahkan!');
     }
 
-    /**
-     * Form edit buku.
-     * Menggunakan Route Model Binding (langsung memanggil Model Buku)
-     */
+   
     public function edit(Buku $buku)
     {
         return view('admin.buku.edit', compact('buku'));
     }
 
-    /**
-     * Update data buku.
-     */
+   
     public function update(Request $request, Buku $buku)
     {
         $request->validate([
@@ -104,7 +95,7 @@ class BukuController extends Controller
             if ($buku->cover && Storage::disk('public')->exists($buku->cover)) {
                 Storage::disk('public')->delete($buku->cover);
             }
-            // Simpan cover baru
+           
             $coverPath = $request->file('cover')->store('covers', 'public');
             $data['cover'] = $coverPath;
         }
@@ -114,12 +105,10 @@ class BukuController extends Controller
         return redirect()->route('buku.index')->with('success', 'Data buku berhasil diperbarui!');
     }
 
-    /**
-     * Hapus buku.
-     */
+    
     public function destroy(Buku $buku)
     {
-        // Hapus cover dari storage jika ada
+        
         if ($buku->cover && Storage::disk('public')->exists($buku->cover)) {
             Storage::disk('public')->delete($buku->cover);
         }

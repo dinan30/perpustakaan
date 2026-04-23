@@ -9,8 +9,7 @@ class Buku extends Model
 {
     use HasFactory;
 
-    protected $table = 'buku'; // Sesuaikan dengan nama tabel di migration
-
+    protected $table = 'buku'; 
     protected $fillable = [
         'kode_buku',
         'judul',

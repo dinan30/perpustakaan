@@ -33,7 +33,10 @@ class PerpustakaanController extends Controller
         }
 
         $pinjamanSaya = Transaksi::with('buku')->where('user_id', Auth::id())->latest()->get();
-        return view('siswa.dashboard', compact('pinjamanSaya'));
+        $totalDenda = $pinjamanSaya->sum('denda');
+        $transaksiBerdenda = $pinjamanSaya->where('denda', '>', 0)->count();
+
+        return view('siswa.dashboard', compact('pinjamanSaya', 'totalDenda', 'transaksiBerdenda'));
     }
 
     // Form Peminjaman
@@ -65,7 +68,7 @@ class PerpustakaanController extends Controller
             'denda' => 0
         ]);
 
-        $buku->decrement('stok');
+        // Stok tidak dikurangi di sini, stok baru dikurangi saat admin menyetujui peminjaman
 
         return redirect()->route('siswa.riwayat')->with('success', 'Peminjaman buku ' . $buku->judul . ' sedang menunggu persetujuan admin!');
     }
